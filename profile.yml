@@ -1,4 +1,4 @@
-description: Profile for Web API applications
+description: Profile for REST API applications
 features:
     defaults: 
         - hibernate
