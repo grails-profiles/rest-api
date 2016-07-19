@@ -22,7 +22,6 @@ grails:
             css: text/css
             csv: text/csv
             js: text/javascript
-            multipartForm: multipart/form-data
             rss: application/rss+xml
             text: text/plain
             all: '*/*'            
