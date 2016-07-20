@@ -1,7 +1,7 @@
 description: Profile for REST API applications
 features:
     defaults: 
-        - hibernate
+        - hibernate5
     required:
         - json-views
 build:
