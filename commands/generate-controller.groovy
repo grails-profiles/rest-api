@@ -22,7 +22,22 @@ if(args) {
              destination: file("grails-app/controllers/${model.packagePath}/${model.convention('Controller')}.groovy"),
              model: model,
              overwrite: overwrite
-             
+
+      render template: template('artifacts/scaffolding/Service.groovy'),
+              destination: file("grails-app/services/${model.packagePath}/${model.convention('Service')}.groovy"),
+              model: model,
+              overwrite: overwrite
+
+      render template: template('artifacts/scaffolding/Spec.groovy'),
+              destination: file("src/test/groovy/${model.packagePath}/${model.convention('ControllerSpec')}.groovy"),
+              model: model,
+              overwrite: overwrite
+
+      render template: template('artifacts/scaffolding/ServiceSpec.groovy'),
+              destination: file("src/integration-test/groovy/${model.packagePath}/${model.convention('ServiceSpec')}.groovy"),
+              model: model,
+              overwrite: overwrite
+
       addStatus "Scaffolding completed for ${projectPath(sourceClass)}"
     }
     else {
