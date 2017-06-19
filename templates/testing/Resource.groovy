@@ -1,13 +1,8 @@
 @artifact.package@
-
-import grails.test.mixin.TestFor
+import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 
-/**
- * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
- */
-@TestFor(@artifact.name@)
-class @artifact.name@Spec extends Specification {
+class @artifact.name@Spec extends Specification implements DomainUnitTest<@artifact.name@> {
 
     def setup() {
     }
@@ -17,6 +12,6 @@ class @artifact.name@Spec extends Specification {
 
     void "test something"() {
         expect:"fix me"
-            true == false
+        true == false
     }
 }

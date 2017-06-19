@@ -31,10 +31,7 @@ dependencies:
         - "org.grails.plugins:geb" 
         - "org.grails:grails-datastore-rest-client"
         - "org.grails:grails-web-testing-support"
+        - "org.grails:grails-gorm-testing-support"
     testRuntime:
         - 'org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1'
         - 'net.sourceforge.htmlunit:htmlunit:2.18'        
-
-
-
-
