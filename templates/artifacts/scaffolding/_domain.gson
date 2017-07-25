@@ -4,4 +4,4 @@ model {
 	${className} ${propertyName}
 }
 
-json g.render(${propertyName})
+json g.render(${propertyName}, [resolveTemplate: false])
