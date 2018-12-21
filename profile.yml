@@ -27,6 +27,6 @@ dependencies:
         - "org.grails.plugins:cache"
         - "org.grails.plugins:async"
     testCompile:
-        - "org.grails.plugins:grails-micronaut-http-client"
+        - "io.micronaut:micronaut-http-client:1.0.2"
         - "org.grails:grails-web-testing-support"
         - "org.grails:grails-gorm-testing-support"

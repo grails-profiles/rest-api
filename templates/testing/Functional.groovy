@@ -1,34 +1,36 @@
 @artifact.package@
 
 import grails.testing.mixin.integration.Integration
-import grails.transaction.*
-import static grails.web.http.HttpHeaders.*
-import static org.springframework.http.HttpStatus.*
-import spock.lang.*
-import geb.spock.*
-import grails.plugins.rest.client.RestBuilder
+import grails.testing.spock.OnceBefore
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.client.HttpClient
+import spock.lang.AutoCleanup
+import spock.lang.Shared
+import spock.lang.Specification
+
 
 @Integration
-@Rollback
-class @artifact.name@Spec extends GebSpec {
+class @artifact.name@Spec extends Specification {
 
-    def setup() {
-    }
+    @Shared
+    @AutoCleanup
+    HttpClient client
 
-    def cleanup() {
+    @OnceBefore
+    void init() {
+        String baseUrl = "http://localhost:$serverPort"
+        this.client  = HttpClient.create(new URL(baseUrl))
     }
 
     void "Test the homepage"() {
         when:"The home page is requested"
-            def resp = restBuilder().get("$baseUrl/")
+        HttpResponse<Map> response = client.toBlocking().exchange(HttpRequest.GET("/"), Map)
 
         then:"The response is correct"
-            resp.status == OK.value()
-            resp.headers[CONTENT_TYPE] == ['application/json;charset=UTF-8']
-            resp.json.message == 'Welcome to Grails!'
-    }
-
-    RestBuilder restBuilder() {
-        new RestBuilder()
+        response.status == HttpStatus.OK
+        response.header(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        response.body().message == 'Welcome to Grails!'
     }
 }

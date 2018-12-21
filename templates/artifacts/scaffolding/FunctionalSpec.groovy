@@ -1,139 +1,157 @@
 <%=packageName ? "package ${packageName}" : ''%>
 
+import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
-import grails.transaction.*
-import static grails.web.http.HttpHeaders.*
-import static org.springframework.http.HttpStatus.*
-import spock.lang.*
-import geb.spock.*
-import grails.plugins.rest.client.RestBuilder
+import grails.testing.spock.OnceBefore
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.exceptions.HttpClientResponseException
+import spock.lang.AutoCleanup
+import spock.lang.Shared
+import spock.lang.Specification
 
 @Integration
-@Rollback
-class ${className}FunctionalSpec extends GebSpec {
+class ${className}FunctionalSpec extends Specification {
 
-    RestBuilder getRestBuilder() {
-        new RestBuilder()
+    @Shared
+    @AutoCleanup
+    HttpClient client
+
+    @OnceBefore
+    void init() {
+        String baseUrl = "http://localhost:$serverPort"
+        this.client  = HttpClient.create(new URL(baseUrl))
     }
 
     String getResourcePath() {
         assert false, "TODO: provide the path to your resource. Example: \"\${baseUrl}/books\""
     }
 
-    Closure getValidJson() {{->
+    Map getValidJson() {
         assert false, "TODO: provide valid JSON"
-    }}
+    }
 
-    Closure getInvalidJson() {{->        
+    Map getInvalidJson() {
         assert false, "TODO: provide invalid JSON"
-    }}    
+    }
 
     void "Test the index action"() {
         when:"The index action is requested"
-        def response = restBuilder.get(resourcePath)
+        HttpResponse<List<Map>> response = client.toBlocking().exchange(HttpRequest.GET(resourcePath), Argument.of(List, Map))
 
         then:"The response is correct"
-        response.status == OK.value()
-        response.json == []
+        response.status == HttpStatus.OK
+        response.body() == []
     }
 
+    @Rollback
     void "Test the save action correctly persists an instance"() {
         when:"The save action is executed with no content"
-        def response = restBuilder.post(resourcePath)
+        client.toBlocking().exchange(HttpRequest.POST(resourcePath, ""))
 
         then:"The response is correct"
-        response.status == UNPROCESSABLE_ENTITY.value()
-        
+        def e = thrown(HttpClientResponseException)
+        e.response.status == HttpStatus.UNPROCESSABLE_ENTITY
+
         when:"The save action is executed with invalid data"
-        response = restBuilder.post(resourcePath) {
-            json invalidJson
-        }           
-        then:"The response is correct"
-        response.status == UNPROCESSABLE_ENTITY.value()
+        client.toBlocking().exchange(HttpRequest.POST(resourcePath, invalidJson))
 
+        then:"The response is correct"
+        e = thrown(HttpClientResponseException)
+        e.response.status == HttpStatus.UNPROCESSABLE_ENTITY
 
         when:"The save action is executed with valid data"
-        response = restBuilder.post(resourcePath) {
-            json validJson
-        }        
+        HttpResponse<Map> response = client.toBlocking().exchange(HttpRequest.POST(resourcePath, validJson), Map)
 
         then:"The response is correct"
-        response.status == CREATED.value()
-        response.json.id
+        response.status == HttpStatus.CREATED
+        response.body().id
         ${className}.count() == 1
+
+        cleanup:
+        def id = response.body().id
+        def path = "${resourcePath}/${id}"
+        response = client.toBlocking().exchange(HttpRequest.DELETE(path))
+        assert response.status() == HttpStatus.NO_CONTENT
     }
 
     void "Test the update action correctly updates an instance"() {
         when:"The save action is executed with valid data"
-        def response = restBuilder.post(resourcePath) {
-            json validJson
-        }        
+        HttpResponse<Map> response = client.toBlocking().exchange(HttpRequest.POST(resourcePath, validJson), Map)
 
         then:"The response is correct"
-        response.status == CREATED.value()
-        response.json.id
+        response.status == HttpStatus.CREATED
+        response.body().id
 
         when:"The update action is called with invalid data"
-        def id = response.json.id
-        response = restBuilder.put("\$resourcePath/\$id") {
-            json invalidJson
-        }  
+        String path = "${resourcePath}/${response.body().id}"
+        client.toBlocking().exchange(HttpRequest.PUT(path, invalidJson), Map)
+
+        then: "The response is unprocessable entity"
+        path
+        def e = thrown(HttpClientResponseException)
+        e.response.status == HttpStatus.UNPROCESSABLE_ENTITY
+
+        when: "The update action is called with valid data"
+        response = client.toBlocking().exchange(HttpRequest.PUT(path, validJson), Map)
 
         then:"The response is correct"
-        response.status == UNPROCESSABLE_ENTITY.value()
+        response.status == HttpStatus.OK
+        response.body()
 
-        when:"The update action is called with valid data"
-        response = restBuilder.put("\$resourcePath/\$id") {
-            json validJson
-        }  
-
-        then:"The response is correct"
-        response.status == OK.value()        
-        response.json
-
-    }    
+        cleanup:
+        response = client.toBlocking().exchange(HttpRequest.DELETE(path))
+        assert response.status() == HttpStatus.NO_CONTENT
+    }
 
     void "Test the show action correctly renders an instance"() {
         when:"The save action is executed with valid data"
-        def response = restBuilder.post(resourcePath) {
-            json validJson
-        }        
+        HttpResponse<Map> response = client.toBlocking().exchange(HttpRequest.POST(resourcePath, validJson), Map)
 
         then:"The response is correct"
-        response.status == CREATED.value()
-        response.json.id
+        response.status == HttpStatus.CREATED
+        response.body().id
 
         when:"When the show action is called to retrieve a resource"
-        def id = response.json.id
-        response = restBuilder.get("\$resourcePath/\$id") 
+        def id = response.body().id
+        String path = "${resourcePath}/${id}"
+        response = client.toBlocking().exchange(HttpRequest.GET(path), Map)
 
         then:"The response is correct"
-        response.status == OK.value()
-        response.json.id == id  
-    }  
+        response.status == HttpStatus.OK
+        response.body().id == id
 
+        cleanup:
+        client.toBlocking().exchange(HttpRequest.DELETE(path))
+    }
+
+    @Rollback
     void "Test the delete action correctly deletes an instance"() {
         when:"The save action is executed with valid data"
-        def response = restBuilder.post(resourcePath) {
-            json validJson
-        }        
+        HttpResponse<Map> response = client.toBlocking().exchange(HttpRequest.POST(resourcePath, validJson), Map)
 
         then:"The response is correct"
-        response.status == CREATED.value()
-        response.json.id
+        response.status == HttpStatus.CREATED
+        response.body().id
 
         when:"When the delete action is executed on an unknown instance"
-        def id = response.json.id
-        response = restBuilder.delete("\$resourcePath/99999") 
+        def id = response.body().id
+        def path = "${resourcePath}/99999"
+        client.toBlocking().exchange(HttpRequest.DELETE(path))
 
         then:"The response is correct"
-        response.status == NOT_FOUND.value()
-        
+        def e = thrown(HttpClientResponseException)
+        e.response.status == HttpStatus.NOT_FOUND
+
         when:"When the delete action is executed on an existing instance"
-        response = restBuilder.delete("\$resourcePath/\$id") 
+        path = "${resourcePath}/${id}"
+        response = client.toBlocking().exchange(HttpRequest.DELETE(path))
 
         then:"The response is correct"
-        response.status == NO_CONTENT.value()        
+        response.status == HttpStatus.NO_CONTENT
         !${className}.get(id)
-    }    
+    }
 }
