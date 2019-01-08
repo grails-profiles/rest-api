@@ -3,6 +3,7 @@
 import grails.testing.mixin.integration.Integration
 import grails.testing.spock.OnceBefore
 import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpHeaders
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
