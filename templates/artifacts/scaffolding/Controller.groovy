@@ -33,11 +33,16 @@ class ${className}Controller {
             render status: NOT_FOUND
             return
         }
+        if (${propertyName}.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond ${propertyName}.errors
+            return
+        }
 
         try {
             ${propertyName}Service.save(${propertyName})
         } catch (ValidationException e) {
-            respond ${propertyName}.errors, view:'create'
+            respond ${propertyName}.errors
             return
         }
 
@@ -50,11 +55,16 @@ class ${className}Controller {
             render status: NOT_FOUND
             return
         }
+        if (${propertyName}.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond ${propertyName}.errors
+            return
+        }
 
         try {
             ${propertyName}Service.save(${propertyName})
         } catch (ValidationException e) {
-            respond ${propertyName}.errors, view:'edit'
+            respond ${propertyName}.errors
             return
         }
 

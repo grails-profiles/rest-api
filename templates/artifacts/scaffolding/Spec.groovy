@@ -39,10 +39,10 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
-        controller.save(null)
+        controller.save()
 
         then:
-        response.status == NOT_FOUND.value()
+        response.status == UNPROCESSABLE_ENTITY.value()
     }
 
     void "Test the save action correctly persists"() {
@@ -56,10 +56,8 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        def ${propertyName} = new ${className}(params)
-        ${propertyName}.id = 1
-
-        controller.save(${propertyName})
+        request.json = new ${className}(params)
+        controller.save()
 
         then:
         response.status == CREATED.value()
@@ -77,13 +75,13 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
-        def ${propertyName} = new ${className}()
-        ${propertyName}.validate()
-        controller.save(${propertyName})
+        populateValidParams(params)
+        request.json = new ${className}(params)
+        controller.save()
 
         then:
         response.status == UNPROCESSABLE_ENTITY.value()
-        response.json.errors
+        response.json
     }
 
     void "Test the show action with a null id"() {
@@ -93,7 +91,7 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         }
 
         when:"The show action is executed with a null domain"
-        controller.show(null)
+        controller.show()
 
         then:"A 404 error is returned"
         response.status == NOT_FOUND.value()
@@ -106,21 +104,22 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         }
 
         when:"A domain instance is passed to the show action"
-        controller.show(2)
+        params.id = 2
+        controller.show()
 
         then:"A model is populated containing the domain instance"
         response.status == OK.value()
-        response.json
+        response.json == [:]
     }
 
     void "Test the update action with a null instance"() {
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update()
 
         then:
-        response.status == NOT_FOUND.value()
+        response.status == UNPROCESSABLE_ENTITY.value()
     }
 
     void "Test the update action correctly persists"() {
@@ -134,10 +133,10 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def ${propertyName} = new ${className}(params)
-        ${propertyName}.id = 1
-
-        controller.update(${propertyName})
+        def instance = new ${className}(params)
+        instance.id = 1
+        instance.version = 0
+        controller.update(instance)
 
         then:
         response.status == OK.value()
@@ -155,20 +154,21 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def ${propertyName} = new ${className}()
-        ${propertyName}.validate()
-        controller.update(${propertyName})
+        def instance = new ${className}(params)
+        instance.id = 1
+        instance.version = 0
+        controller.update(instance)
 
         then:
         response.status == UNPROCESSABLE_ENTITY.value()
-        response.json.errors
+        response.json
     }
 
     void "Test the delete action with a null instance"() {
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(null)
+        controller.delete()
 
         then:
         response.status == NOT_FOUND.value()
@@ -183,7 +183,8 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        params.id = 2
+        controller.delete()
 
         then:
         response.status == NO_CONTENT.value()
