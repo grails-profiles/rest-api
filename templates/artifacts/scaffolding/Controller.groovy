@@ -7,6 +7,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
+import grails.gorm.transactions.ReadOnly
+import grails.gorm.transactions.Transactional
+
+@ReadOnly
 class ${className}Controller {
 
     ${className}Service ${propertyName}Service
@@ -23,6 +27,7 @@ class ${className}Controller {
         respond ${propertyName}Service.get(id)
     }
 
+    @Transactional
     def save(${className} ${propertyName}) {
         if (${propertyName} == null) {
             render status: NOT_FOUND
@@ -39,6 +44,7 @@ class ${className}Controller {
         respond ${propertyName}, [status: CREATED, view:"show"]
     }
 
+    @Transactional
     def update(${className} ${propertyName}) {
         if (${propertyName} == null) {
             render status: NOT_FOUND
@@ -55,6 +61,7 @@ class ${className}Controller {
         respond ${propertyName}, [status: OK, view:"show"]
     }
 
+    @Transactional
     def delete(Long id) {
         if (id == null) {
             render status: NOT_FOUND
