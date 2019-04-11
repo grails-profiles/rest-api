@@ -11,3 +11,4 @@ grails.plugin.springsecurity.filterChain.chainMap = [
                 filters: 'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'
         ]
 ]
+grails.plugin.springsecurity.rest.token.storage.jwt.secret = "changemechangemechangemechangeme"
