@@ -1,4 +1,4 @@
 description: Adds Spring Security REST to the project
 dependencies:
     compile:
-        - org.grails.plugins:spring-security-rest:2.0.0.RC1
+        - org.grails.plugins:spring-security-rest:3.0.0.RC1
