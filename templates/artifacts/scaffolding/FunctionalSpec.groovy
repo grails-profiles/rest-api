@@ -73,7 +73,7 @@ class ${className}FunctionalSpec extends Specification {
 
         cleanup:
         def id = response.body().id
-        def path = "${resourcePath}/${id}"
+        def path = "\${resourcePath}/\${id}"
         response = client.toBlocking().exchange(HttpRequest.DELETE(path))
         assert response.status() == HttpStatus.NO_CONTENT
     }
@@ -87,7 +87,7 @@ class ${className}FunctionalSpec extends Specification {
         response.body().id
 
         when:"The update action is called with invalid data"
-        String path = "${resourcePath}/${response.body().id}"
+        String path = "\${resourcePath}/\${response.body().id}"
         client.toBlocking().exchange(HttpRequest.PUT(path, invalidJson), Map)
 
         then: "The response is unprocessable entity"
@@ -117,7 +117,7 @@ class ${className}FunctionalSpec extends Specification {
 
         when:"When the show action is called to retrieve a resource"
         def id = response.body().id
-        String path = "${resourcePath}/${id}"
+        String path = "\${resourcePath}/\${id}"
         response = client.toBlocking().exchange(HttpRequest.GET(path), Map)
 
         then:"The response is correct"
@@ -139,7 +139,7 @@ class ${className}FunctionalSpec extends Specification {
 
         when:"When the delete action is executed on an unknown instance"
         def id = response.body().id
-        def path = "${resourcePath}/99999"
+        def path = "\${resourcePath}/99999"
         client.toBlocking().exchange(HttpRequest.DELETE(path))
 
         then:"The response is correct"
@@ -147,7 +147,7 @@ class ${className}FunctionalSpec extends Specification {
         e.response.status == HttpStatus.NOT_FOUND
 
         when:"When the delete action is executed on an existing instance"
-        path = "${resourcePath}/${id}"
+        path = "\${resourcePath}/\${id}"
         response = client.toBlocking().exchange(HttpRequest.DELETE(path))
 
         then:"The response is correct"
