@@ -22,7 +22,7 @@ class ${className}FunctionalSpec extends Specification {
 
     @OnceBefore
     void init() {
-        String baseUrl = "http://localhost:\${serverPort}"
+        String baseUrl = "http://localhost:\$serverPort"
         this.client  = HttpClient.create(new URL(baseUrl))
     }
 
