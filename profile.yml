@@ -12,21 +12,35 @@ build:
     excludes:
         - org.grails.grails-core
 dependencies:
-    compile:
-        - "org.springframework.boot:spring-boot-starter-actuator"
-        - "org.springframework.boot:spring-boot-starter-tomcat"
-        - "org.grails:grails-plugin-url-mappings"
-        - "org.grails:grails-plugin-rest"
-        - "org.grails:grails-plugin-codecs"
-        - "org.grails:grails-plugin-interceptors"
-        - "org.grails:grails-plugin-services"        
-        - "org.grails:grails-plugin-datasource"
-        - "org.grails:grails-plugin-databinding"        
-        - "org.grails:grails-web-boot"
-        - "org.grails:grails-logging"
-        - "org.grails.plugins:cache"
-        - "org.grails.plugins:async"
-    testCompile:
-        - "io.micronaut:micronaut-http-client"
-        - "org.grails:grails-web-testing-support"
-        - "org.grails:grails-gorm-testing-support"
+    - scope: compile
+      coords: "org.springframework.boot:spring-boot-starter-actuator"
+    - scope: compile
+      coords: "org.springframework.boot:spring-boot-starter-tomcat"
+    - scope: compile
+      coords: "org.grails:grails-plugin-url-mappings"
+    - scope: compile
+      coords: "org.grails:grails-plugin-rest"
+    - scope: compile
+      coords: "org.grails:grails-plugin-codecs"
+    - scope: compile
+      coords: "org.grails:grails-plugin-interceptors"
+    - scope: compile
+      coords: "org.grails:grails-plugin-services"
+    - scope: compile
+      coords: "org.grails:grails-plugin-datasource"
+    - scope: compile
+      coords: "org.grails:grails-plugin-databinding"
+    - scope: compile
+      coords: "org.grails:grails-web-boot"
+    - scope: compile
+      coords: "org.grails:grails-logging"
+    - scope: compile
+      coords: "org.grails.plugins:cache"
+    - scope: compile
+      coords: "org.grails.plugins:async"
+    - scope: testCompile
+      coords: "io.micronaut:micronaut-http-client"
+    - scope: testCompile
+      coords: "org.grails:grails-web-testing-support"
+    - scope: testCompile
+      coords: "org.grails:grails-gorm-testing-support"
