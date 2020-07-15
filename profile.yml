@@ -30,3 +30,5 @@ dependencies:
         - "io.micronaut:micronaut-http-client"
         - "org.grails:grails-web-testing-support"
         - "org.grails:grails-gorm-testing-support"
+        - "org.grails:views-json-testing-support"
+        - "org.hibernate.validator:hibernate-validator:6.0.20.Final"
