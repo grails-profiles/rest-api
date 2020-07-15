@@ -2,15 +2,16 @@
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import org.grails.datastore.mapping.core.Datastore
+import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-import org.hibernate.SessionFactory
 
 @Integration
 @Rollback
 class ${className}ServiceSpec extends Specification {
 
     ${className}Service ${propertyName}Service
-    SessionFactory sessionFactory
+    @Autowired Datastore datastore
 
     private Long setupData() {
         // TODO: Populate valid domain instances and return a valid ID
@@ -21,6 +22,10 @@ class ${className}ServiceSpec extends Specification {
         //new ${className}(...).save(flush: true, failOnError: true)
         assert false, "TODO: Provide a setupData() implementation for this generated test suite"
         //${propertyName}.id
+    }
+
+    void cleanup() {
+        assert false, "TODO: Provide a cleanup implementation if using MongoDB"
     }
 
     void "test get"() {
@@ -56,7 +61,7 @@ class ${className}ServiceSpec extends Specification {
 
         when:
         ${propertyName}Service.delete(${propertyName}Id)
-        sessionFactory.currentSession.flush()
+        datastore.currentSession.flush()
 
         then:
         ${propertyName}Service.count() == 4

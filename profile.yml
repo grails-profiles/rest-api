@@ -44,3 +44,7 @@ dependencies:
       coords: "org.grails:grails-web-testing-support"
     - scope: testCompile
       coords: "org.grails:grails-gorm-testing-support"
+    - scope: testCompile
+      coords: "org.grails:views-json-testing-support"
+    - scope: testCompile
+      coords: "org.hibernate.validator:hibernate-validator:6.0.20.Final"

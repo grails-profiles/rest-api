@@ -9,8 +9,13 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.validation.ValidationException
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
+import grails.plugin.json.view.JsonViewGrailsPlugin
 
 class ${className}ControllerSpec extends Specification implements ControllerUnitTest<${className}Controller>, DomainUnitTest<${className}> {
+
+    void setupSpec() {
+        defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
+    }
 
     def populateValidParams(params) {
         assert params != null
@@ -177,7 +182,7 @@ class ${className}ControllerSpec extends Specification implements ControllerUnit
     void "Test the delete action with an instance"() {
         given:
         controller.${propertyName}Service = Mock(${className}Service) {
-            1 * delete(2)
+            1 * delete(2) >> new ${className}(id: 2)
         }
 
         when:

@@ -73,12 +73,10 @@ class ${className}Controller {
 
     @Transactional
     def delete(Long id) {
-        if (id == null) {
+        if (id == null || ${propertyName}Service.delete(id) == null) {
             render status: NOT_FOUND
             return
         }
-
-        ${propertyName}Service.delete(id)
 
         render status: NO_CONTENT
     }
