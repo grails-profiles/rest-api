@@ -26,6 +26,10 @@ class ${className}FunctionalSpec extends Specification {
         this.client  = HttpClient.create(new URL(baseUrl))
     }
 
+    void cleanup() {
+        assert false, "TODO: Provide a cleanup implementation if using MongoDB"
+    }
+
     String getResourcePath() {
         assert false, "TODO: provide the path to your resource. Example: \"\${baseUrl}/books\""
     }

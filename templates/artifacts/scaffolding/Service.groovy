@@ -11,7 +11,7 @@ interface ${className}Service {
 
     Long count()
 
-    void delete(Serializable id)
+    ${className} delete(Serializable id)
 
     ${className} save(${className} ${propertyName})
 
