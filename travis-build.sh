@@ -8,7 +8,7 @@ if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then
   echo "Publishing archives"
 
   if [[ -n $TRAVIS_TAG ]]; then
-      ./gradlew bintrayUpload || EXIT_STATUS=$?
+      ./gradlew publish bintrayUpload || EXIT_STATUS=$?
   else
       ./gradlew publish || EXIT_STATUS=$?
   fi
