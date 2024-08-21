@@ -32,5 +32,5 @@ grailsPublish {
 }
 
 dependencies {
-    profileRuntimeOnly "org.grails.profiles:base:$baseProfileVersion"
+    profileRuntimeOnly "org.grails.profiles:base:$baseVersion"
 }
